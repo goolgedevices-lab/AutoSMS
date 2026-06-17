@@ -1,11 +1,4 @@
-- name: AndroidX ni yoqish
-  run: |
-    cd extracted/AutoSMS
-    echo "android.useAndroidX=true" > gradle.properties
-    echo "android.enableJetifier=true" >> gradle.properties
-    cat gradle.properties
-    
-    name: Build APK from ZIP
+name: Build APK from ZIP
 
 on:
   workflow_dispatch:
@@ -32,27 +25,28 @@ jobs:
         uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: 8.7
-- name: ZIP faylni ochish
-  run: |
-    rm -rf extracted
-    unzip AutoSMS_project.zip -d extracted
-    ls -la extracted
-    ls -la extracted/AutoSMS
 
-- name: AndroidX ni yoqish
-  run: |
-    cd extracted/AutoSMS
-    echo "android.useAndroidX=true" > gradle.properties
-    echo "android.enableJetifier=true" >> gradle.properties
-    cat gradle.properties
+      - name: ZIP faylni ochish
+        run: |
+          rm -rf extracted
+          unzip AutoSMS_project.zip -d extracted
+          ls -la extracted
+          ls -la extracted/AutoSMS
 
-- name: APK yasash
-  run: |
-    cd extracted/AutoSMS
-    gradle assembleDebug --stacktrace
+      - name: AndroidX ni yoqish
+        run: |
+          cd extracted/AutoSMS
+          echo "android.useAndroidX=true" > gradle.properties
+          echo "android.enableJetifier=true" >> gradle.properties
+          cat gradle.properties
 
-- name: APK ni yuklash
-  uses: actions/upload-artifact@v4
-  with:
-    name: AutoSMS-debug-apk
-    path: extracted/AutoSMS/app/build/outputs/apk/debug/*.apk
+      - name: APK yasash
+        run: |
+          cd extracted/AutoSMS
+          gradle assembleDebug --stacktrace
+
+      - name: APK ni yuklash
+        uses: actions/upload-artifact@v4
+        with:
+          name: AutoSMS-debug-apk
+          path: extracted/AutoSMS/app/build/outputs/apk/debug/*.apk
