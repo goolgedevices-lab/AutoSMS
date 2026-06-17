@@ -21,16 +21,22 @@ jobs:
           distribution: temurin
           java-version: 17
 
-      - name: Gradle o‘rnatish
+      - name: Gradle 8.7 o‘rnatish
         uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: 8.7
 
       - name: ZIP faylni ochish
-        run: unzip AutoSMS_project.zip -d extracted
+        run: |
+          rm -rf extracted
+          unzip AutoSMS_project.zip -d extracted
+          ls -la extracted
+          ls -la extracted/AutoSMS
 
       - name: APK yasash
         run: |
           cd extracted/AutoSMS
-          gradle assembleDebug
+          gradle assembleDebug --stacktrace
 
       - name: APK ni yuklash
         uses: actions/upload-artifact@v4
