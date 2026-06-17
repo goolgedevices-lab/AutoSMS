@@ -1,0 +1,39 @@
+name: Build APK from ZIP
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Repository fayllarini olish
+        uses: actions/checkout@v4
+
+      - name: Java 17 o‘rnatish
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Gradle o‘rnatish
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: ZIP faylni ochish
+        run: unzip AutoSMS_project.zip -d extracted
+
+      - name: APK yasash
+        run: |
+          cd extracted/AutoSMS
+          gradle assembleDebug
+
+      - name: APK ni yuklash
+        uses: actions/upload-artifact@v4
+        with:
+          name: AutoSMS-debug-apk
+          path: extracted/AutoSMS/app/build/outputs/apk/debug/*.apk
