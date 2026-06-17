@@ -37,13 +37,33 @@ jobs:
         run: |
           cd extracted/AutoSMS
           echo "android.useAndroidX=true" > gradle.properties
-          echo "android.enableJetifier=true" >> gradle.properties
+          echo "android.enableJetifier=false" >> gradle.properties
           cat gradle.properties
+
+      - name: Kotlin duplicate fix
+        run: |
+          cd extracted/AutoSMS
+          cat >> app/build.gradle <<'EOF'
+
+          configurations.all {
+              resolutionStrategy {
+                  force "org.jetbrains.kotlin:kotlin-stdlib:1.8.22"
+                  force "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.22"
+                  force "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.22"
+              }
+          }
+          EOF
+
+          cat app/build.gradle
 
       - name: APK yasash
         run: |
           cd extracted/AutoSMS
           gradle assembleDebug --stacktrace
+
+      - name: APK ni tekshirish
+        run: |
+          find extracted/AutoSMS -name "*.apk" -print
 
       - name: APK ni yuklash
         uses: actions/upload-artifact@v4
